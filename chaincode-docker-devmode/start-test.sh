@@ -4,8 +4,10 @@ docker-compose -f docker-compose-simple.yaml up -d
 docker ps
 
 # Build & start the chaincode
-docker exec -d chaincode bash -c "cd sacc && go build
-CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./sacc"
+# docker exec -d chaincode bash -c "cd sacc && go build
+# CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./sacc"
+docker exec -d chaincode bash -c "cd sacc
+CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./chaincode"
 sleep 10
 
 # Install chaincode

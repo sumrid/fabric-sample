@@ -200,7 +200,7 @@ func (t *SimpleChaincode) initMarble(stub shim.ChaincodeStubInterface, args []st
 	// ==== Create marble object and marshal to JSON ====
 	objectType := "marble"
 	marble := &marble{objectType, marbleName, color, size, owner}
-	marbleJSONasBytes, err := json.Marshal(marble)
+	marbleJSONasBytes, err := json.Marshal(marble) // เปลี่ยนเป็น json byte
 	if err != nil {
 		return shim.Error(err.Error())
 	}
