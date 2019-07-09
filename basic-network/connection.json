@@ -13,7 +13,7 @@
         }
     },
     "channels": {
-        "mychannel-1": {
+        "mychannel": {
             "orderers": [
                 "orderer.example.com"
             ],

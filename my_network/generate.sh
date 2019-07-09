@@ -26,6 +26,7 @@ fi
 
 # 2.generate genesis block for orderer
 # เรียกใช้ไฟล์ configtx.yaml
+# เป็นการสร้าง block แรกใน network
 configtxgen -profile ThreeOrgOrdererGenesis -outputBlock ./config/genesis.block
 if [ "$?" -ne 0 ]; then
   echo "Failed to generate orderer genesis block..."

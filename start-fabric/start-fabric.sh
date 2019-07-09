@@ -182,11 +182,12 @@ docker exec \
 
 # docker exec -e "CORE_PEER_LOCALMSPID=Org3MSP" -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp" cli peer chaincode install -n mycc -v 1.0 -p $CC_SRC_PATH -l $CC_RUNTIME_LANGUAGE
 
+
 #########################
 # instantiate chaincode
 #########################
-echo "============ Instantiate chaincode ============="
-
+echo "========= Instantiate chaincode ========="
+## mychanel-1
 docker exec \
 	-e "CORE_PEER_LOCALMSPID=Org1MSP" \
 	-e 'CORE_PEER_ADDRESS=peer0.org1.example.com:7051' \
@@ -196,23 +197,37 @@ docker exec \
 	peer chaincode instantiate \
 	-o orderer.example.com:7050 \
 	-C mychannel-1 -n mycc -l golang -v 1.0 \
-	-c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org1MSP.member','Org2MSP.member','Org3MSP.member')"
+	-c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
+	# -c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
+
+## mychannel-2
+docker exec \
+	-e "CORE_PEER_LOCALMSPID=Org3MSP" \
+	-e 'CORE_PEER_ADDRESS=peer0.org3.example.com:7051' \
+	-e 'CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt' \
+	-e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp" \
+	cli \
+	peer chaincode instantiate \
+	-o orderer.example.com:7050 \
+	-C mychannel-2 -n mycc -l golang -v 1.0 \
+	-c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org2MSP.member','Org3MSP.member')"
+	# -c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
 
 sleep 3
 
 ##########
 # invoke
 ##########
-echo "============== Query ============="
-# docker exec \
-# 	-e "CORE_PEER_LOCALMSPID=Org1MSP" \
-# 	-e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp" \
-# 	cli peer chaincode invoke \
-# 	-o orderer.example.com:7050 \
-# 	-C mychannel-1 -n mycc -c '{"Args":["query", "a"]}' \
-# 	--peerAddresses peer0.org1.example.com:7051 \
-# 	--tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+echo "============== Invoke ============="
+docker exec \
+	-e "CORE_PEER_LOCALMSPID=Org1MSP" \
+	-e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp" \
+	cli peer chaincode invoke \
+	-o orderer.example.com:7050 \
+	-C mychannel-1 -n mycc -c '{"Args":["query", "d"]}' \
+	--peerAddresses peer0.org1.example.com:7051 \
 
+echo "=============== Query ============="
 docker exec \
 	-e "CORE_PEER_LOCALMSPID=Org1MSP" \
 	-e 'CORE_PEER_ADDRESS=peer0.org1.example.com:7051' \
@@ -222,6 +237,16 @@ docker exec \
 	-C mychannel-1 \
 	-n mycc \
 	-c '{"Args":["query", "c"]}'
+
+docker exec \
+	-e "CORE_PEER_LOCALMSPID=Org3MSP" \
+	-e 'CORE_PEER_ADDRESS=peer0.org3.example.com:7051' \
+	-e 'CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt' \
+	-e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp" \
+	cli peer chaincode query \
+	-C mychannel-2 \
+	-n mycc \
+	-c '{"Args":["query", "d"]}'
 
 # install
 # cat <<EOF

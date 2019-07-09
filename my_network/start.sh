@@ -71,6 +71,6 @@ docker exec -e "CORE_PEER_LOCALMSPID=Org2MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/h
 docker exec -e "CORE_PEER_LOCALMSPID=Org3MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org3.example.com/msp" peer0.org3.example.com peer channel update -o orderer.example.com:7050 -c $CHANNEL_2 -f /etc/hyperledger/configtx/Org3MSPanchors_c2.tx
 
 #############################
-#         end start
+#   start network success
 #############################
 
