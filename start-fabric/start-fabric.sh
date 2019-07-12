@@ -187,7 +187,7 @@ docker exec \
 # instantiate chaincode
 #########################
 echo "========= Instantiate chaincode ========="
-## mychanel-1
+echo "## mychanel-1 ##"
 docker exec \
 	-e "CORE_PEER_LOCALMSPID=Org1MSP" \
 	-e 'CORE_PEER_ADDRESS=peer0.org1.example.com:7051' \
@@ -197,10 +197,10 @@ docker exec \
 	peer chaincode instantiate \
 	-o orderer.example.com:7050 \
 	-C mychannel-1 -n mycc -l golang -v 1.0 \
-	-c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
+	-c '{"Args":["Init", "c", "99", "d", "299"]}' -P "OR ('Org1MSP.member','Org2MSP.member')"
 	# -c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
 
-## mychannel-2
+echo "## mychannel-2 ##"
 docker exec \
 	-e "CORE_PEER_LOCALMSPID=Org3MSP" \
 	-e 'CORE_PEER_ADDRESS=peer0.org3.example.com:7051' \
@@ -210,7 +210,7 @@ docker exec \
 	peer chaincode instantiate \
 	-o orderer.example.com:7050 \
 	-C mychannel-2 -n mycc -l golang -v 1.0 \
-	-c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org2MSP.member','Org3MSP.member')"
+	-c '{"Args":["Init", "c", "399", "d", "499"]}' -P "OR ('Org2MSP.member','Org3MSP.member')"
 	# -c '{"Args":["Init", "c", "500", "d", "100"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
 
 sleep 3
@@ -227,7 +227,7 @@ docker exec \
 	-C mychannel-1 -n mycc -c '{"Args":["query", "d"]}' \
 	--peerAddresses peer0.org1.example.com:7051 \
 
-echo "=============== Query ============="
+echo "=============== Query mychannel-1 ============="
 docker exec \
 	-e "CORE_PEER_LOCALMSPID=Org1MSP" \
 	-e 'CORE_PEER_ADDRESS=peer0.org1.example.com:7051' \
@@ -238,6 +238,7 @@ docker exec \
 	-n mycc \
 	-c '{"Args":["query", "c"]}'
 
+echo "=============== Query mychannel-2 ============="
 docker exec \
 	-e "CORE_PEER_LOCALMSPID=Org3MSP" \
 	-e 'CORE_PEER_ADDRESS=peer0.org3.example.com:7051' \
@@ -247,61 +248,3 @@ docker exec \
 	-C mychannel-2 \
 	-n mycc \
 	-c '{"Args":["query", "d"]}'
-
-# install
-# cat <<EOF
-
-# Total setup execution time : $(($(date +%s) - starttime)) secs ...
-# install
-# Next, use the FabCar applications to interact with the deployed FabCar contract.
-# The FabCar applications are available in multiple programming languages.
-# Follow the instructions for the programming language of your choice:
-
-# JavaScript:
-
-#   Start by changing into the "javascript" directory:
-#     cd javascript
-
-#   Next, install all required packages:
-#     npm install
-
-#   Then run the following applications to enroll the admin user, and register a new user
-#   called user1 which will be used by the other applications to interact with the deployed
-#   FabCar contract:
-#     node enrollAdmin
-#     node registerUser
-
-#   You can run the invoke application as follows. By default, the invoke application will
-#   create a new car, but you can update the application to submit other transactions:ndorsement failure during query
-#     node invoke
-
-#   You can run the query application as follows. By default, the query application will
-#   return all cars, but you can update the application to evaluate other transactions:
-#     node query
-
-# TypeScript:
-
-#   Start by changing into the "typescript" directory:
-#     cd typescript
-
-#   Next, install all required packages:
-#     npm install
-
-#   Next, compile the TypeScript code into JavaScript:
-#     npm run build
-
-#   Then run the following applications to enroll the admin user, and register a new user
-#   called user1 which will be used by the other applications to interact with the deployed
-#   FabCar contract:
-#     node dist/enrollAdmin
-#     node dist/registerUser
-
-#   You can run the invoke application as follows. By default, the invoke application will
-#   create a new car, but you can update the application to submit other transactions:
-#     node dist/invoke
-
-#   You can run the query application as follows. By default, the query application will
-#   return all cars, but you can update the application to evaluate other transactions:
-#     node dist/query
-
-# EOF
